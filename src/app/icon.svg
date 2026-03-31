@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Phone case outline -->
+  <rect x="7" y="3" width="18" height="26" rx="4" ry="4" fill="#e91e7a" />
+  <!-- Inner phone screen -->
+  <rect x="9.5" y="5.5" width="13" height="21" rx="2.5" ry="2.5" fill="white" />
+  <!-- Screen content - subtle gradient feel -->
+  <rect x="11" y="7" width="10" height="16" rx="1" ry="1" fill="#f0f4f8" />
+  <!-- Camera notch -->
+  <circle cx="16" cy="9" r="1" fill="#cbd5e1" />
+  <!-- Home indicator -->
+  <rect x="13.5" y="25" width="5" height="1" rx="0.5" fill="#cbd5e1" />
+  <!-- Case bumper edges -->
+  <rect x="5.5" y="10" width="1.5" height="5" rx="0.75" fill="#c71666" />
+  <rect x="25" y="8" width="1.5" height="3" rx="0.75" fill="#c71666" />
+  <rect x="25" y="13" width="1.5" height="3" rx="0.75" fill="#c71666" />
+</svg>
