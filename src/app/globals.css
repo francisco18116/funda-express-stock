@@ -1,17 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f9fafb;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --brand-cyan: #00b4d8;
+  --brand-cyan-dark: #0096b7;
+  --brand-pink: #e91e7a;
+  --brand-pink-dark: #c71666;
+  --brand-pink-light: #fdf2f8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-cyan-dark: var(--brand-cyan-dark);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-pink-dark: var(--brand-pink-dark);
+  --color-brand-pink-light: var(--brand-pink-light);
   --font-sans: var(--font-geist-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Table row hover animation */
+.stock-row {
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.stock-row:hover {
+  background-color: #f8fafc;
+}
+
+/* Smooth badge transitions */
+.stock-badge {
+  transition: all 0.2s ease;
+}
+.stock-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.95);
 }

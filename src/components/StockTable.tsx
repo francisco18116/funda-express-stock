@@ -17,17 +17,10 @@ function supabase() {
 }
 
 const BRAND_COLORS: Record<string, string> = {
-  Apple: 'bg-gray-100 text-gray-800 border-gray-300',
-  Samsung: 'bg-blue-50 text-blue-800 border-blue-300',
-  Xiaomi: 'bg-orange-50 text-orange-800 border-orange-300',
-  HONOR: 'bg-green-50 text-green-800 border-green-300',
-}
-
-const BRAND_ICONS: Record<string, string> = {
-  Apple: '',
-  Samsung: '',
-  Xiaomi: '',
-  HONOR: '',
+  Apple: 'bg-slate-100 text-slate-700 border-slate-200',
+  Samsung: 'bg-blue-50 text-blue-700 border-blue-200',
+  Xiaomi: 'bg-amber-50 text-amber-700 border-amber-200',
+  HONOR: 'bg-emerald-50 text-emerald-700 border-emerald-200',
 }
 
 export default function StockTable() {
@@ -125,7 +118,7 @@ export default function StockTable() {
     const value = field === 'stock' ? parseInt(editValue) || 0 : editValue.trim()
 
     if (!value && field !== 'stock') {
-      showToast('El campo no puede estar vacío', 'error')
+      showToast('El campo no puede estar vacio', 'error')
       setSaving(null)
       return
     }
@@ -141,7 +134,7 @@ export default function StockTable() {
       setProducts((prev) =>
         prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
       )
-      showToast('Guardado correctamente', 'success')
+      showToast('Guardado', 'success')
     }
 
     setEditingCell(null)
@@ -179,7 +172,7 @@ export default function StockTable() {
   }
 
   const deleteProduct = async (id: number) => {
-    if (!confirm('¿Estás seguro de eliminar este producto?')) return
+    if (!confirm('Eliminar este producto?')) return
 
     const { error } = await supabase().from('products').delete().eq('id', id)
     if (error) {
@@ -216,164 +209,215 @@ export default function StockTable() {
   const brands = [...new Set(products.map((p) => p.brand))].sort()
 
   const getStockBadge = (stock: number) => {
-    if (stock === 0) return 'bg-red-100 text-red-700 border-red-200'
-    if (stock <= 20) return 'bg-yellow-100 text-yellow-700 border-yellow-200'
-    return 'bg-green-100 text-green-700 border-green-200'
+    if (stock === 0) return 'bg-red-50 text-red-600 border-red-200'
+    if (stock <= 20) return 'bg-amber-50 text-amber-600 border-amber-200'
+    return 'bg-emerald-50 text-emerald-600 border-emerald-200'
   }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
-          <p className="text-gray-500 text-sm">Cargando inventario...</p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-12 h-12 border-4 border-gray-200 rounded-full" />
+            <div className="w-12 h-12 border-4 border-transparent border-t-brand-pink rounded-full animate-spin absolute inset-0" />
+          </div>
+          <p className="text-gray-400 text-sm font-medium">Cargando inventario...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium transition-all ${
+          className={`fixed top-4 right-4 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-medium transition-all animate-[fadeIn_0.2s_ease] ${
             toast.type === 'success'
-              ? 'bg-green-500 text-white'
+              ? 'bg-emerald-500 text-white'
               : 'bg-red-500 text-white'
           }`}
         >
-          {toast.message}
+          <div className="flex items-center gap-2">
+            {toast.type === 'success' ? (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            )}
+            {toast.message}
+          </div>
         </div>
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Total Modelos</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{filteredProducts.length}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center">
+              <svg className="w-5 h-5 text-brand-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Modelos</p>
+              <p className="text-2xl font-bold text-gray-900">{filteredProducts.length}</p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Stock Total</p>
-          <p className="text-2xl font-bold text-indigo-600 mt-1">{totalStock}</p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center">
+              <svg className="w-5 h-5 text-brand-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Stock Total</p>
+              <p className="text-2xl font-bold text-brand-pink">{totalStock.toLocaleString()}</p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Sin Stock</p>
-          <p className="text-2xl font-bold text-red-500 mt-1">
-            {filteredProducts.filter((p) => p.stock === 0).length}
-          </p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Sin Stock</p>
+              <p className="text-2xl font-bold text-red-500">
+                {filteredProducts.filter((p) => p.stock === 0).length}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">Marcas</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{brands.length}</p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+              <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Marcas</p>
+              <p className="text-2xl font-bold text-gray-900">{brands.length}</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
         <div className="flex flex-col md:flex-row gap-3">
-          {/* Search */}
           <div className="flex-1 relative">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               type="text"
               placeholder="Buscar por marca o modelo..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink/30 focus:border-brand-pink bg-gray-50/50 placeholder:text-gray-400"
             />
           </div>
 
-          {/* Brand filter */}
           <select
             value={brandFilter}
             onChange={(e) => setBrandFilter(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30 focus:border-brand-pink"
           >
             <option value="all">Todas las marcas</option>
             {brands.map((b) => (
-              <option key={b} value={b}>
-                {BRAND_ICONS[b]} {b}
-              </option>
+              <option key={b} value={b}>{b}</option>
             ))}
           </select>
 
-          {/* Stock filter */}
           <select
             value={stockFilter}
             onChange={(e) => setStockFilter(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30 focus:border-brand-pink"
           >
             <option value="all">Todo el stock</option>
             <option value="in_stock">Con stock</option>
-            <option value="low_stock">Stock bajo (&le;20)</option>
+            <option value="low_stock">Stock bajo</option>
             <option value="out_of_stock">Sin stock</option>
           </select>
 
-          {/* Add button */}
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2 whitespace-nowrap"
+            className="px-5 py-2.5 bg-gradient-to-r from-brand-pink to-brand-pink-dark text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-brand-pink/25 transition-all btn-press flex items-center gap-2 whitespace-nowrap"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
             </svg>
-            Agregar
+            Nuevo Producto
           </button>
         </div>
 
         {/* Add Form */}
         {showAddForm && (
-          <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col md:flex-row gap-3">
-            <select
-              value={newProduct.brand}
-              onChange={(e) => setNewProduct({ ...newProduct, brand: e.target.value })}
-              className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Seleccionar marca</option>
-              {brands.map((b) => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-              <option value="__custom">+ Nueva marca</option>
-            </select>
+          <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col md:flex-row gap-3 items-end">
+            <div className="flex-1 w-full md:w-auto">
+              <label className="block text-xs font-medium text-gray-500 mb-1 ml-1">Marca</label>
+              <select
+                value={newProduct.brand}
+                onChange={(e) => setNewProduct({ ...newProduct, brand: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30"
+              >
+                <option value="">Seleccionar</option>
+                {brands.map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+                <option value="__custom">+ Nueva marca</option>
+              </select>
+            </div>
             {newProduct.brand === '__custom' && (
+              <div className="flex-1 w-full md:w-auto">
+                <label className="block text-xs font-medium text-gray-500 mb-1 ml-1">Nueva marca</label>
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  onChange={(e) => setNewProduct({ ...newProduct, brand: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30"
+                />
+              </div>
+            )}
+            <div className="flex-1 w-full md:w-auto">
+              <label className="block text-xs font-medium text-gray-500 mb-1 ml-1">Modelo</label>
               <input
                 type="text"
-                placeholder="Nombre de marca"
-                onChange={(e) => setNewProduct({ ...newProduct, brand: e.target.value })}
-                className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="IP16-PRO"
+                value={newProduct.model}
+                onChange={(e) => setNewProduct({ ...newProduct, model: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30"
               />
-            )}
-            <input
-              type="text"
-              placeholder="Modelo (ej: IP16-PRO)"
-              value={newProduct.model}
-              onChange={(e) => setNewProduct({ ...newProduct, model: e.target.value })}
-              className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <input
-              type="number"
-              placeholder="Stock"
-              value={newProduct.stock}
-              onChange={(e) => setNewProduct({ ...newProduct, stock: parseInt(e.target.value) || 0 })}
-              className="w-24 px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            </div>
+            <div className="w-full md:w-28">
+              <label className="block text-xs font-medium text-gray-500 mb-1 ml-1">Stock</label>
+              <input
+                type="number"
+                placeholder="0"
+                value={newProduct.stock}
+                onChange={(e) => setNewProduct({ ...newProduct, stock: parseInt(e.target.value) || 0 })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30"
+              />
+            </div>
             <div className="flex gap-2">
               <button
                 onClick={addProduct}
-                className="px-4 py-2.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+                className="px-5 py-2.5 bg-emerald-500 text-white rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors btn-press"
               >
                 Guardar
               </button>
@@ -382,7 +426,7 @@ export default function StockTable() {
                   setShowAddForm(false)
                   setNewProduct({ brand: '', model: '', stock: 0 })
                 }}
-                className="px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors"
+                className="px-5 py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
               >
                 Cancelar
               </button>
@@ -392,62 +436,62 @@ export default function StockTable() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
+              <tr className="border-b border-gray-100">
                 <th
                   onClick={() => handleSort('brand')}
-                  className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                  className="px-5 py-4 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-brand-pink select-none transition-colors"
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     Marca
                     {sortConfig.key === 'brand' && (
-                      <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                      <span className="text-brand-pink">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </div>
                 </th>
                 <th
                   onClick={() => handleSort('model')}
-                  className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                  className="px-5 py-4 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-brand-pink select-none transition-colors"
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     Modelo
                     {sortConfig.key === 'model' && (
-                      <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                      <span className="text-brand-pink">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </div>
                 </th>
                 <th
                   onClick={() => handleSort('stock')}
-                  className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                  className="px-5 py-4 text-center text-[11px] font-semibold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-brand-pink select-none transition-colors"
                 >
-                  <div className="flex items-center justify-center gap-1">
+                  <div className="flex items-center justify-center gap-1.5">
                     Stock
                     {sortConfig.key === 'stock' && (
-                      <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                      <span className="text-brand-pink">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </div>
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Ajuste rápido
+                <th className="px-5 py-4 text-center text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                  Ajuste
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Acciones
+                <th className="px-5 py-4 text-center text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                  &nbsp;
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredProducts.map((product) => (
+            <tbody>
+              {filteredProducts.map((product, idx) => (
                 <tr
                   key={product.id}
-                  className={`hover:bg-gray-50 transition-colors ${
-                    saving === product.id ? 'opacity-60' : ''
-                  }`}
+                  className={`stock-row border-b border-gray-50 ${
+                    saving === product.id ? 'opacity-50' : ''
+                  } ${idx % 2 === 0 ? '' : 'bg-gray-50/30'}`}
                 >
                   {/* Brand */}
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     {editingCell?.id === product.id && editingCell?.field === 'brand' ? (
                       <input
                         autoFocus
@@ -455,22 +499,22 @@ export default function StockTable() {
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={() => saveEdit(product.id, 'brand')}
                         onKeyDown={(e) => handleKeyDown(e, product.id, 'brand')}
-                        className="w-full px-2 py-1 border border-indigo-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-1.5 border-2 border-brand-pink rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink/20"
                       />
                     ) : (
                       <span
                         onClick={() => startEditing(product.id, 'brand', product.brand)}
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border cursor-pointer hover:opacity-80 ${
-                          BRAND_COLORS[product.brand] || 'bg-purple-50 text-purple-800 border-purple-300'
+                        className={`stock-badge inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer ${
+                          BRAND_COLORS[product.brand] || 'bg-purple-50 text-purple-700 border-purple-200'
                         }`}
                       >
-                        {BRAND_ICONS[product.brand]} {product.brand}
+                        {product.brand}
                       </span>
                     )}
                   </td>
 
                   {/* Model */}
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     {editingCell?.id === product.id && editingCell?.field === 'model' ? (
                       <input
                         autoFocus
@@ -478,12 +522,12 @@ export default function StockTable() {
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={() => saveEdit(product.id, 'model')}
                         onKeyDown={(e) => handleKeyDown(e, product.id, 'model')}
-                        className="w-full px-2 py-1 border border-indigo-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-1.5 border-2 border-brand-pink rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink/20"
                       />
                     ) : (
                       <span
                         onClick={() => startEditing(product.id, 'model', product.model)}
-                        className="text-sm font-medium text-gray-900 cursor-pointer hover:text-indigo-600 transition-colors"
+                        className="text-sm font-semibold text-gray-800 cursor-pointer hover:text-brand-cyan transition-colors"
                       >
                         {product.model}
                       </span>
@@ -491,7 +535,7 @@ export default function StockTable() {
                   </td>
 
                   {/* Stock */}
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-5 py-3.5 text-center">
                     {editingCell?.id === product.id && editingCell?.field === 'stock' ? (
                       <input
                         autoFocus
@@ -500,14 +544,12 @@ export default function StockTable() {
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={() => saveEdit(product.id, 'stock')}
                         onKeyDown={(e) => handleKeyDown(e, product.id, 'stock')}
-                        className="w-20 mx-auto px-2 py-1 border border-indigo-300 rounded text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-20 mx-auto px-3 py-1.5 border-2 border-brand-pink rounded-lg text-sm text-center focus:outline-none focus:ring-2 focus:ring-brand-pink/20"
                       />
                     ) : (
                       <span
                         onClick={() => startEditing(product.id, 'stock', product.stock)}
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border cursor-pointer hover:opacity-80 ${getStockBadge(
-                          product.stock
-                        )}`}
+                        className={`stock-badge inline-flex items-center justify-center min-w-[3rem] px-3 py-1.5 rounded-lg text-xs font-bold border cursor-pointer ${getStockBadge(product.stock)}`}
                       >
                         {product.stock}
                       </span>
@@ -515,53 +557,44 @@ export default function StockTable() {
                   </td>
 
                   {/* Quick adjust */}
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => updateStock(product.id, -10)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold transition-colors"
-                        title="-10"
+                        className="w-9 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 text-[10px] font-bold transition-colors btn-press"
                       >
                         -10
                       </button>
                       <button
                         onClick={() => updateStock(product.id, -1)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-sm font-bold transition-colors"
-                        title="-1"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 text-sm font-bold transition-colors btn-press"
                       >
                         -
                       </button>
                       <button
                         onClick={() => updateStock(product.id, 1)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 text-sm font-bold transition-colors"
-                        title="+1"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 hover:bg-emerald-100 text-sm font-bold transition-colors btn-press"
                       >
                         +
                       </button>
                       <button
                         onClick={() => updateStock(product.id, 10)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 text-xs font-bold transition-colors"
-                        title="+10"
+                        className="w-9 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 hover:bg-emerald-100 text-[10px] font-bold transition-colors btn-press"
                       >
                         +10
                       </button>
                     </div>
                   </td>
 
-                  {/* Actions */}
-                  <td className="px-4 py-3 text-center">
+                  {/* Delete */}
+                  <td className="px-5 py-3.5 text-center">
                     <button
                       onClick={() => deleteProduct(product.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                       title="Eliminar"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
                   </td>
@@ -572,18 +605,19 @@ export default function StockTable() {
         </div>
 
         {filteredProducts.length === 0 && (
-          <div className="text-center py-12 text-gray-400">
-            <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          <div className="text-center py-16 text-gray-300">
+            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <p className="text-sm">No se encontraron productos</p>
+            <p className="text-sm font-medium">No se encontraron productos</p>
+            <p className="text-xs mt-1">Intenta con otros filtros</p>
           </div>
         )}
       </div>
 
-      {/* Tip */}
-      <p className="text-xs text-gray-400 text-center">
-        Hacé clic en cualquier celda para editarla. Usá los botones +/- para ajuste rápido de stock.
+      {/* Footer tip */}
+      <p className="text-[11px] text-gray-300 text-center font-medium tracking-wide">
+        Clic en cualquier celda para editar &middot; Botones +/- para ajuste rapido
       </p>
     </div>
   )

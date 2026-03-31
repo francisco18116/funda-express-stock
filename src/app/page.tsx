@@ -1,39 +1,30 @@
+import Image from "next/image";
 import StockTable from "@/components/StockTable";
 import LogoutButton from "@/components/LogoutButton";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#f8fafc]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  Funda Express
-                </h1>
-                <p className="text-xs text-gray-500">
-                  Gestión de Stock - Uruguay
-                </p>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Funda Express"
+                width={180}
+                height={50}
+                className="h-10 w-auto"
+                priority
+              />
             </div>
-            <LogoutButton />
+            <div className="flex items-center gap-4">
+              <span className="hidden sm:block text-xs text-gray-400 font-medium">
+                Stock Manager
+              </span>
+              <LogoutButton />
+            </div>
           </div>
         </div>
       </header>

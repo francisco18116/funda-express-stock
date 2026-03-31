@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -23,7 +24,9 @@ export default function LoginPage() {
     })
 
     if (error) {
-      setError(error.message)
+      setError(error.message === 'Invalid login credentials'
+        ? 'Email o contraseña incorrectos'
+        : error.message)
       setLoading(false)
     } else {
       router.push('/')
@@ -32,33 +35,30 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50/30 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-10 h-10 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-              />
-            </svg>
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/logo.png"
+              alt="Funda Express"
+              width={240}
+              height={70}
+              className="h-16 w-auto"
+              priority
+            />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Funda Express</h1>
-          <p className="text-sm text-gray-500 mt-1">Gestión de Stock - Uruguay</p>
+          <p className="text-sm text-gray-400 font-medium">Ingresa al sistema de stock</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+        <form
+          onSubmit={handleLogin}
+          className="bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50 p-7 space-y-5"
+        >
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1.5">
               Email
             </label>
             <input
@@ -68,12 +68,12 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@email.com"
               required
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30 focus:border-brand-pink transition-all placeholder:text-gray-300"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1.5">
               Contraseña
             </label>
             <input
@@ -83,12 +83,15 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Tu contraseña"
               required
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-pink/30 focus:border-brand-pink transition-all placeholder:text-gray-300"
             />
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
+            <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               {error}
             </div>
           )}
@@ -96,11 +99,22 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-gradient-to-r from-brand-pink to-brand-pink-dark text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-brand-pink/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed btn-press"
           >
-            {loading ? 'Ingresando...' : 'Ingresar'}
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Ingresando...
+              </div>
+            ) : (
+              'Ingresar'
+            )}
           </button>
         </form>
+
+        <p className="text-center text-[11px] text-gray-300 mt-6 font-medium">
+          Funda Express Uruguay &middot; Stock Manager
+        </p>
       </div>
     </div>
   )
