@@ -1,10 +1,19 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { getSupabase, Product } from '@/lib/supabase'
+import { createClient } from '@/utils/supabase/client'
+
+type Product = {
+  id: number
+  brand: string
+  model: string
+  stock: number
+  created_at: string
+  updated_at: string
+}
 
 function supabase() {
-  return getSupabase()
+  return createClient()
 }
 
 const BRAND_COLORS: Record<string, string> = {

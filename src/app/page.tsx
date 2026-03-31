@@ -1,4 +1,5 @@
 import StockTable from "@/components/StockTable";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
+            <LogoutButton />
           </div>
         </div>
       </header>
